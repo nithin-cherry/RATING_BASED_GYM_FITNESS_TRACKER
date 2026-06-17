@@ -1,0 +1,32 @@
+const users = [
+    {
+        id: 1,
+        name: "Nithin",
+        age: 21,
+        email: "nithin@gmail.com",
+        role: "admin"
+    },
+    {
+        id: 2,
+        name: "Rahul",
+        age: 22,
+        email: "rahul@gmail.com",
+        role: "user"
+    },
+    {
+        id: 3,
+        name: "Sneha",
+        age: 20,
+        email: "sneha@gmail.com",
+        role: "user"
+    },
+    {
+        id: 4,
+        name: "Arjun",
+        age: 23,
+        email: "arjun@gmail.com",
+        role: "moderator"
+    }
+];
+
+module.exports = users;
