@@ -11,7 +11,7 @@ function Login() {
 
   const handleRegister = async () => {
     try {
-      const res = await fetch("http://localhost:5000/register", {
+      const res = await fetch("https://rating-based-gym-fitness-tracker.onrender.com/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -41,7 +41,7 @@ function Login() {
     setIsEntering(true);
 
     try {
-      const response = await fetch("http://localhost:5000/login", {
+      const response = await fetch("https://rating-based-gym-fitness-tracker.onrender.com/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
