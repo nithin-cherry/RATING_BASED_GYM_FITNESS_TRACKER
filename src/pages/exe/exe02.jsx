@@ -24,7 +24,7 @@ function Final() {
         return;
       }
       try {
-        const res = await fetch(`http://localhost:5000/user/${email}`);
+        const res = await fetch(`https://rating-based-gym-fitness-tracker.onrender.com/user/${email}`);
         if (!res.ok) throw new Error("Failed to fetch user");
         const data = await res.json();
         if (data.success) {
@@ -64,7 +64,7 @@ function Final() {
           completedAt: new Date().toISOString()
         }
       };
-      const res = await fetch(`http://localhost:5000/user/${email}/daily-workout`, {
+      const res = await fetch(`https://rating-based-gym-fitness-tracker.onrender.com/user/${email}/daily-workout`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -80,7 +80,7 @@ function Final() {
     }
   };
 
-  // Auto generate workout
+ 
   useEffect(() => {
     if (loading || !user || isTodayWorkout) return;
 
