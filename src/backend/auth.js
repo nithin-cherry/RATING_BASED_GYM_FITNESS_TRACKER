@@ -66,6 +66,39 @@ const userSchema = new mongoose.Schema(
 
 const User = mongoose.model("User", userSchema);
 
+
+app.get("/user/:email", async (req, res) => {
+  try {
+    const user = await User.findOne({
+      email: req.params.email.toLowerCase(),
+    });
+
+    if (!user) {
+      return res.json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    res.json({
+      success: true,
+      user: {
+        email: user.email,
+        physique: user.physique,
+        stats: user.stats,
+      },
+    });
+  } catch (err) {
+    console.error(err);
+
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
+});
+
+
 app.get("/", (req, res) => {
   res.send("Gym Tracker Backend Running");
 });
@@ -163,6 +196,93 @@ app.post("/login", async (req, res) => {
       message: "Server error",
     });
   }
+});
+
+app.post("/save-stats", async (req, res) => {
+  try {
+    const {
+      email,
+      weight,
+      bodyFat,
+      height,
+      age,
+      gender,
+    } = req.body;
+
+    const user = await User.findOne({
+      email: email.toLowerCase(),
+    });
+
+    if (!user) {
+      return res.json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    user.stats = {
+      weight,
+      bodyFat,
+      height,
+      age,
+      gender,
+    };
+
+    await user.save();
+
+    res.json({
+      success: true,
+      message: "Stats saved",
+    });
+  } catch (err) {
+    console.error(err);
+
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
+});
+app.post("/physique", async (req, res) => {
+  try {
+    const { email, physique } = req.body;
+
+    const user = await User.findOneAndUpdate(
+      { email: email.toLowerCase() },
+      { physique: physique },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    res.json({
+      success: true,
+      user,
+    });
+
+  } catch (err) {
+    console.error(err);
+
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
+});
+app.patch('/user/:email/daily-workout', async (req, res) => {
+  const { dailyWorkout } = req.body;
+
+  const updated = await User.findOneAndUpdate(
+    { email: req.params.email },
+    { $set: { dailyWorkout } },
+    { new: true }
+  );
+  res.json({ success: true, user: updated });
 });
 
 app.listen(PORT, () => {
