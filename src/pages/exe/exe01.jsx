@@ -19,25 +19,53 @@ function Exe01() {
     setStats({ ...stats, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = () => {
-    if (
-      !stats.weight ||
-      !stats.bodyFat ||
-      !stats.height ||
-      !stats.age ||
-      !stats.gender
-    ) {
-      alert("Fill all system parameters!");
-      return;
+  const handleSubmit = async () => {
+  if (
+    !stats.weight ||
+    !stats.bodyFat ||
+    !stats.height ||
+    !stats.age ||
+    !stats.gender
+  ) {
+    alert("Fill all system parameters!");
+    return;
+  }
+
+  try {
+    const res = await fetch(
+      "http://localhost:5000/save-stats",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: localStorage.getItem("email"),
+          weight: stats.weight,
+          bodyFat: stats.bodyFat,
+          height: stats.height,
+          age: stats.age,
+          gender: stats.gender,
+        }),
+      }
+    );
+
+    const data = await res.json();
+
+    if (data.success) {
+      setSubmitted(true);
+
+      setTimeout(() => {
+        navigate("/2");
+      }, 1500);
+    } else {
+      alert(data.message);
     }
-
-    localStorage.setItem("userStats", JSON.stringify(stats));
-    setSubmitted(true);
-
-    setTimeout(() => {
-      navigate("/2");
-    }, 1500);
-  };
+  } catch (err) {
+    console.error(err);
+    alert("Server error");
+  }
+};
 
   return (
     <div style={styles.container}>
