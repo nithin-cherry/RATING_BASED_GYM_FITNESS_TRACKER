@@ -26,10 +26,10 @@ function Final() {
         console.log("Backend not available, using demo data");
       }
 
-      // Fallback mock data (when backend fails)
+      
       const mockUser = {
         email: email || "demo@fitness.com",
-        physique: "lean", // change to "muscular" or "beast" to test different plans
+        physique: "lean", 
         stats: {
           weight: "78",
           height: "178",
