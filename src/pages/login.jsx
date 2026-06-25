@@ -1,17 +1,73 @@
 import { useState } from "react";
 import sk from "../images/sk.mp4";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
+  const navigate = useNavigate();
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isEntering, setIsEntering] = useState(false);
 
-  const handleEnter = () => {
+  const handleRegister = async () => {
+    try {
+      const res = await fetch("http://localhost:5000/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: username,
+          password: password,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        alert("Account created successfully");
+        localStorage.setItem("email", username);
+        navigate("/physique");
+      } else {
+        alert(data.message);
+      }
+    } catch (err) {
+      console.log(err);
+      alert("Server error");
+    }
+  };
+
+  const handleEnter = async () => {
     setIsEntering(true);
+
+    try {
+      const response = await fetch("http://localhost:5000/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: username,
+          password: password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        localStorage.setItem("email", data.user.email);
+        navigate("/physique");
+      } else {
+        alert(data.message);
+      }
+    } catch (err) {
+      console.log(err);
+      alert("Server error");
+    }
+
     setTimeout(() => {
-      alert("SYSTEM: Awakening sequence initiated...");
       setIsEntering(false);
-    }, 1800);
+    }, 1500);
   };
 
   return (
@@ -23,7 +79,6 @@ function Login() {
       <div style={styles.overlay} />
 
       <div style={styles.card}>
-        {/* System Header */}
         <div style={styles.systemHeader}>
           <div style={styles.systemLogo}>【 SYSTEM 】</div>
           <div style={styles.title}>SOLO LEVELING</div>
@@ -31,9 +86,18 @@ function Login() {
         </div>
 
         <div style={styles.statusBar}>
-          <p>Player: <span style={{ color: "#00f0ff" }}>{username || "UNKNOWN"}</span></p>
-          <p>Rank: <span style={{ color: "#ff3366" }}>E</span>-Class Hunter</p>
-          <p>Level: <span style={{ color: "#ffd700" }}>01</span></p>
+          <p>
+            Player:{" "}
+            <span style={{ color: "#00f0ff" }}>
+              {username || "UNKNOWN"}
+            </span>
+          </p>
+          <p>
+            Rank: <span style={{ color: "#ff3366" }}>E</span>-Class Hunter
+          </p>
+          <p>
+            Level: <span style={{ color: "#ffd700" }}>01</span>
+          </p>
         </div>
 
         <input
@@ -60,18 +124,27 @@ function Login() {
           {isEntering ? "AWAKENING..." : "ENTER THE GATE"}
         </button>
 
+        <button style={styles.button} onClick={handleRegister}>
+          REGISTER
+        </button>
+
         <div style={styles.warning}>
-           ONCE YOU ENTER, THERE IS NO TURNING BACK
+          ONCE YOU ENTER, THERE IS NO TURNING BACK
         </div>
 
         <div style={styles.infoBox}>
-          <p>Job: <span style={{ color: "#00f0ff" }}>Necromancer (Hidden)</span></p>
-          <p>Shadow Soldiers: <span style={{ color: "#888" }}>0 / ∞</span></p>
+          <p>
+            Job:{" "}
+            <span style={{ color: "#00f0ff" }}>
+              Necromancer (Hidden)
+            </span>
+          </p>
+          <p>
+            Shadow Soldiers: <span style={{ color: "#888" }}>0 / ∞</span>
+          </p>
         </div>
 
-        <p style={styles.footer}>
-          "THERE IS NO GOING BACK"
-        </p>
+        <p style={styles.footer}>"THERE IS NO GOING BACK"</p>
       </div>
     </div>
   );
@@ -102,22 +175,21 @@ const styles = {
 
   overlay: {
     position: "absolute",
-    top: 0,
-    left: 0,
-    width: "100%",
-    height: "100%",
-    background: "radial-gradient(circle at center, rgba(0,0,0,0.35) 30%, rgba(0,0,0,0.92) 80%)",
+    inset: 0,
+    background:
+      "radial-gradient(circle at center, rgba(0,0,0,0.35) 30%, rgba(0,0,0,0.92) 80%)",
     zIndex: 1,
   },
 
   card: {
     width: "100%",
     maxWidth: "420px",
-    padding: "35px 32px 30px",       
+    padding: "35px 32px 30px",
     border: "1px solid #00f0ff",
     borderRadius: "8px",
     background: "rgba(5, 10, 25, 0.93)",
-    boxShadow: "0 0 40px rgba(0, 240, 255, 0.35), inset 0 0 25px rgba(0, 240, 255, 0.1)",
+    boxShadow:
+      "0 0 40px rgba(0, 240, 255, 0.35), inset 0 0 25px rgba(0, 240, 255, 0.1)",
     color: "white",
     zIndex: 2,
     position: "relative",
@@ -125,7 +197,7 @@ const styles = {
 
   systemHeader: {
     textAlign: "center",
-    marginBottom: "22px",           
+    marginBottom: "22px",
   },
 
   systemLogo: {
@@ -136,7 +208,7 @@ const styles = {
   },
 
   title: {
-    fontSize: "clamp(26px, 7vw, 32px)",
+    fontSize: "28px",
     fontWeight: "bold",
     color: "#00f0ff",
     textShadow: "0 0 15px #00f0ff",
@@ -144,7 +216,7 @@ const styles = {
   },
 
   subtitle: {
-    fontSize: "clamp(13px, 3.5vw, 14px)",
+    fontSize: "13px",
     color: "#ff3366",
     letterSpacing: "3px",
   },
@@ -160,9 +232,7 @@ const styles = {
 
   input: {
     width: "92%",
-      padding: "13px 16px",
-      marginLeft: "auto",
-    marginRight: "auto",
+    padding: "13px 16px",
     marginBottom: "14px",
     background: "#0a0f1f",
     color: "white",
@@ -182,7 +252,6 @@ const styles = {
     fontWeight: "bold",
     letterSpacing: "3px",
     cursor: "pointer",
-    transition: "all 0.4s",
   },
 
   warning: {

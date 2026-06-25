@@ -1,6 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import ln from "../images/landing.mp4";
+import ph1 from "../images/ph1.png";
+import ph2 from "../images/ph2.png";
+import ph3 from "../images/ph3.png";
 
 function Landing() {
   const navigate = useNavigate();
@@ -256,7 +259,7 @@ const style = {
     maxWidth: "360px",
   },
 
-  isButtonHovered: {
+  buttonHover: {
     transform: "scale(1.1)",
     background: "rgba(0, 191, 255, 0.12)",
     boxShadow: "0 0 65px rgb(116, 116, 116)",
