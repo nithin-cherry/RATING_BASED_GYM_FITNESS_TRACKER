@@ -33,7 +33,7 @@ function Exe01() {
 
   try {
     const res = await fetch(
-      "http://localhost:5000/save-stats",
+      "https://rating-based-gym-fitness-tracker.onrender.com/save-stats",
       {
         method: "POST",
         headers: {
