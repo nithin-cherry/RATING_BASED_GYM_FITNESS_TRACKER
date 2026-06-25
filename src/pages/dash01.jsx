@@ -8,40 +8,58 @@ import ph3 from "../images/ph3.png";
 function Dash01() {
   const [selectedPhysique, setSelectedPhysique] = useState(null);
 const navigate = useNavigate();
-  const physiques = [
-    {
-      id: 1,
-      title: "LEAN AESTHETIC",
-      image: ph1,
-    },
-    {
-      id: 2,
-      title: "ATHLETIC BUILD",
-      image: ph2,
-    },
-    {
-      id: 3,
-      title: "MASS MONSTER",
-      image: ph3,
-    },
-  ];
+ const physiques = [
+  {
+    id: 1,
+    value: "lean",
+    title: "LEAN AESTHETIC",
+    image: ph1,
+  },
+  {
+    id: 2,
+    value: "muscular",
+    title: "ATHLETIC BUILD",
+    image: ph2,
+  },
+  {
+    id: 3,
+    value: "beast",
+    title: "MASS MONSTER",
+    image: ph3,
+  },
+];
+  
+ const handleContinue = async () => {
+  const chosen = physiques.find(
+    (p) => p.id === selectedPhysique
+  );
 
-  const handleContinue = () => {
-    const chosen = physiques.find(
-      (p) => p.id === selectedPhysique
+  try {
+    const res = await fetch(
+      "http://localhost:5000/physique",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: localStorage.getItem("email"),
+          physique: chosen.value,
+        }),
+      }
     );
+
+    const data = await res.json();
+
+    if (data.success) {
+      navigate("/1");
+    }
+  } catch (err) {
+    console.error(err);
+   }
    
-    navigate("/"+selectedPhysique);
-    console.log("Selected Physique:", chosen.title);
-
-    localStorage.setItem(
-      "physique",
-      chosen.title
-    );
-
-    alert(`${chosen.title} selected!`);
-  };
-
+   alert("Protocol is initiated");
+};
   return (
     <div style={styles.container}>
       <div style={styles.overlay} />
