@@ -36,7 +36,7 @@ const navigate = useNavigate();
 
   try {
     const res = await fetch(
-      "http://localhost:5000/physique",
+      "https://rating-based-gym-fitness-tracker.onrender.com/physique",
       {
         method: "POST",
         headers: {
